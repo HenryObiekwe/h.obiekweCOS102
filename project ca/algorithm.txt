@@ -1,0 +1,110 @@
+# Data Structure representing the menu
+BEGIN MENU 
+    Rice/Pasta:
+        Jollof Rice: Price 350
+        Coconut Fried Rice: Price 350
+        Jollof Spaghetti: Price 350
+    Side Dishes:
+        Savoury Beans: Price 350
+        Roasted Sweet Potatoes: Price 300
+        Fried Plaintains: Price 150
+        Mixed Vegetable Salad: Price 150
+        Boiled Yam: Price 150
+    Soups and Swallows: 
+        Eba: Price 100
+        Pounded Yam: Price 100
+        Semo: Price 100
+        Atama Soup: Price 480
+        Egusi Soup: 480
+    Proteins
+        Sweet Chill Chicken: Price 1100
+        Grilled Chicked Wings: Price 400
+        Fried Beef: Price 400
+        Fried Fish: Price 500
+        Boiled Egg: Price 200
+        Sauteed Sausages: Price 200
+    Beverages
+         Water: Price 200
+         Glass Drink(35cl): Price 150
+         PET Drink(35cl): Price 300
+         PET Drink(50cl): Price 350
+         Glass/Canned Malt: Prcie 500
+         Fresh Yo: Price 600
+         Pineapple Juice: Price 350
+         Mango Juice: Price 350
+         Zobo Drink: Price 350 
+        
+END MENU
+
+# Function to calculate order total and discount
+FUNCTION calculate_total(orders)
+    total = 0
+    FOR EACH category IN orders
+        FOR EACH item, quantity IN category
+            total = total + (MENU[category][item] * quantity)
+
+    IF total >= 5000
+        discount = total * 0.25
+    ELSE IF total >= 2500
+        discount = total * 0.15
+    ELSE IF total >= 1000
+        discount = total * 0.1
+    
+    discounted_total = total - discount
+    RETURN total, discount, discounted_total
+END FUNCTION
+
+FUNCTION display_menu
+CREATE WINDOW titled "PAU Cafeteria"
+
+# Function to display the menu
+FUNCTION display_menu()
+    CREATE NEW WINDOW titled "Menu"
+    FOR EACH category, items IN MENU
+        DISPLAY category name (bold font) 
+        FOR EACH item, price IN items
+        IF item == "Mango Juice"
+          DISPLAY "Mango Juice ✪ N[price]"
+          ELSE
+            DISPLAY "[item]: N[price]"
+    DISPLAY "ENJOY!" (center, bold, red)
+END FUNCTION
+
+# Function to create order input form 
+FUNCTION take_order()
+    CREATE NEW WINDOW titled "Place Your Order"
+
+    DISPLAY Label "Customer Name:"
+    CREATE input field for Name
+
+    order_vars = EMPTY DICTIONARY
+
+    FOR EACH category, items IN MENU
+        DISPLAY category name (bold font)
+        row_index = row_index + 1
+        FOR EACH item IN items
+            DISPLAY item name
+            CREATE quantity input field (default = 0)
+            # Store reference to input field in order_vars
+
+    CREATE Button "Confirm Order" (calls confirm_order function)
+
+    # Function to get orders and display summary
+    FUNCTION confirm_order()
+        GET customer name from input field 
+        orders = EMPTY DICTIONARY
+
+        FOR EACH category, items in MENU  
+            IF any item in category has quantity > 0:
+                orders[category] = {item: quantity for item, quantity in items.items() IF quantity > 0}
+        
+        total, discount, discounted_total = calculate_total(orders)
+        DISPLAY order summary (name, total, discount, discounted_total) 
+    END FUNCTION
+ END FUNCTION
+
+#  Main application UI setup
+CREATE Button "Display Menu" (calls display_menu function)
+CREATE Button "Place Your Order" (calls take_order function)
+
+START application 
